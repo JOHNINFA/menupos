@@ -1,0 +1,100 @@
+# ============================================
+# .gitignore — MenuPOS
+# ============================================
+# Importante: este archivo evita que subamos a Git
+# cosas que: (1) ocupan mucho espacio, (2) son
+# secretas, o (3) se generan automáticamente.
+# ============================================
+
+# ─── Python / Django ───────────────────────
+venv/
+env/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.sqlite3
+*.db
+db.sqlite3-journal
+local_settings.py
+celerybeat-schedule
+.python-version
+
+# Django específico
+media/
+staticfiles/
+backend/media/
+backend/staticfiles/
+
+# ─── Node / React ──────────────────────────
+node_modules/
+.npm
+.pnpm-store/
+yarn.lock
+package-lock.json.bak
+
+# Builds de frontend
+dist/
+build/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+.turbo/
+.vite/
+
+# ─── Variables de entorno (¡SECRETOS!) ─────
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+!.env.example
+
+# AWS / claves
+*.pem
+*.key
+aws-credentials.json
+
+# ─── Editores ──────────────────────────────
+.vscode/
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# ─── Sistema Operativo ─────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+
+# ─── Logs ──────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Docker ────────────────────────────────
+.docker/
+docker-data/
+
+# ─── Coverage / Tests ──────────────────────
+coverage/
+*.lcov
+.nyc_output
+
+# ─── Otros ─────────────────────────────────
+*.tmp
+*.bak
+.tmp/
