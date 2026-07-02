@@ -125,13 +125,18 @@ menupos/
 
 ## 📅 Estado actual
 
-**Fase actual**: FASE 1 — Estructura + Documentación inicial
-**Fecha de inicio**: 2026-06-26
-**Próxima fase**: FASE 2 — Setup Django + DRF backend
+**Fase actual**: FASE 2 completada — Backend Django funcionando (SQLite, sin API todavía)
+**Última actualización**: 2026-07-01
+**Próxima fase**: FASE 3 — Setup React + Vite + Tailwind frontend
+
+### Decisiones tomadas
+- Usuario tiene conocimiento básico de programación → se salta lectura previa de mini-clases, prefiere que Claude construya de corrido y lee la documentación después/en paralelo. Seguir comentando código y creando mini-clases igual, pero sin pausar para confirmar entendimiento en cada paso salvo que el usuario lo pida.
+- Base de datos: SQLite en desarrollo (no PostgreSQL/Docker todavía) para avanzar rápido. Migrar a PostgreSQL en fase dedicada futura.
+- Apps creadas: `users`, `menu`, `sales` (vacías, sin modelos aún)
 
 ### Plan por fases
 - ✅ FASE 1: Estructura + docs base + mini-clases iniciales
-- ⏳ FASE 2: Setup Django backend (instalar dependencias)
+- ✅ FASE 2: Setup Django backend (venv, Django+DRF+JWT+CORS instalados, proyecto `config` + apps `users`/`menu`/`sales` creadas, settings.py comentado, migrate y check OK)
 - ⏳ FASE 3: Setup React frontend
 - ⏳ FASE 4: Modelos de base de datos
 - ⏳ FASE 5: Serializers + API REST

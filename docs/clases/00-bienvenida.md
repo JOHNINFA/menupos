@@ -157,11 +157,11 @@ Vamos por **fases pequeñas** para no abrumarte:
 
 Responde mentalmente (o escríbelas en `docs/quizzes/fase-01.md` cuando llegue el momento):
 
-1. ¿Qué significan las siglas **POS**?
-2. ¿Qué dos tipos de usuarios va a tener MenuPOS?
-3. En la metáfora del restaurante, ¿qué representa el **backend**?
-4. ¿Qué representa el **serializer**?
-5. ¿Por qué usamos analogías del restaurante para aprender?
+1. ¿Qué significan las siglas **POS**? respuesta : sistema de punto de venta
+2. ¿Qué dos tipos de usuarios va a tener MenuPOS? respuestas: administrador y meseroa
+3. En la metáfora del restaurante, ¿qué representa el **backend**? es la cocina y administracion lo quen no se ve
+4. ¿Qué representa el **serializer**? es el traductor
+5. ¿Por qué usamos analogías del restaurante para aprender? es mas facil de entender sobre la practica
 
 > 📝 Las respuestas las verás resueltas en `docs/quizzes/fase-01.md` al final de la FASE 1.
 

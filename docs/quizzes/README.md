@@ -5,7 +5,7 @@ Al final de cada fase, un quiz para reforzar lo aprendido.
 | Fase | Quiz | Estado | Conceptos cubiertos |
 |---|---|---|---|
 | 01 | [Estructura y conceptos básicos](fase-01.md) | ✅ Listo | POS, Frontend/Backend, API REST, JSON |
-| 02 | Setup Django | 🔜 Próximamente | venv, Django, settings, runserver |
+| 02 | [Setup Django](fase-02.md) | ✅ Listo | venv, Django, settings, runserver, CORS, JWT config |
 | 03 | Setup React | 🔜 Próximamente | Vite, componentes, npm |
 | 04 | Modelos | 🔜 Próximamente | Models, campos, migraciones |
 | 05 | API REST | 🔜 Próximamente | Serializers, ViewSets, URLs |
