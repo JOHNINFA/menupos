@@ -100,12 +100,14 @@ menupos/
 ├── .gitignore             ← Protege disco (ignora node_modules, venv, .env)
 ├── .env.example           ← Plantilla de variables de entorno
 │
-├── backend/               ← Django + DRF
-│   ├── (por crear en FASE 2)
+├── backend/               ← Django + DRF (config, apps users/menu/sales)
 │   └── requirements.txt   ← Dependencias Python
 │
 ├── frontend/              ← React + Vite + Tailwind
-│   ├── (por crear en FASE 3)
+│   ├── src/api/           ← Cliente Axios
+│   ├── src/context/       ← AuthContext (sesión de usuario)
+│   ├── src/components/    ← Header, ProductoCard, RutaProtegida
+│   ├── src/pages/         ← Login, Pos, Dashboard
 │   └── package.json
 │
 └── docs/                  ← MATERIAL DE APRENDIZAJE
@@ -125,9 +127,9 @@ menupos/
 
 ## 📅 Estado actual
 
-**Fase actual**: FASE 5 completada — API REST funcional con permisos por rol y JWT
+**Fase actual**: FASE 6 completada — Frontend conectado a la API (login, POS, dashboard funcionando end-to-end)
 **Última actualización**: 2026-07-01
-**Próxima fase**: FASE 6 — Conectar React con la API (login, dashboard, UI del POS)
+**Próxima fase**: FASE 7 — Imágenes de productos en AWS S3
 
 ### Decisiones tomadas
 - Usuario tiene conocimiento básico de programación → se salta lectura previa de mini-clases, prefiere que Claude construya de corrido y lee la documentación después/en paralelo. Seguir comentando código y creando mini-clases igual, pero sin pausar para confirmar entendimiento en cada paso salvo que el usuario lo pida.
@@ -146,10 +148,15 @@ menupos/
 - ✅ FASE 3: Setup React frontend (Vite + React 19 + TypeScript + Tailwind v4 + react-router-dom + axios instalados, App.tsx de bienvenida, build verificado sin errores)
 - ✅ FASE 4: Modelos (Usuario con rol, Categoria, Producto, Venta, DetalleVenta) + admin.py registrados + migraciones + verificación vía shell
 - ✅ FASE 5: API REST (Serializers anidados, ViewSets, Router, permisos por rol, JWT login/refresh, endpoint /me) — probado end-to-end con curl
-- ⏳ FASE 6: UI del POS en React (login, dashboard, conectar con la API)
+- ✅ FASE 6: Frontend conectado (AuthContext con localStorage, RutaProtegida, cliente Axios con interceptor JWT, páginas Login/Pos/Dashboard, componentes Header/ProductoCard) — probado con backend+frontend corriendo juntos, CORS verificado
 - ⏳ FASE 7: Imágenes en AWS S3
 - ⏳ FASE 8: Deploy (Railway + Vercel)
 - ⏳ FASE 9: README final + screenshots + GIF demo
+
+### Notas técnicas de FASE 6
+- Token JWT guardado en `localStorage` (limitación XSS conocida y documentada, aceptable para proyecto de portafolio)
+- `AuthContext` verifica sesión existente vía `/api/users/me/` al montar la app
+- El carrito del POS solo manda `{producto, cantidad}` a `/api/ventas/` — el precio y total se calculan en el backend (nunca se confía en el frontend para dinero)
 
 ---
 
