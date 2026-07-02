@@ -125,9 +125,9 @@ menupos/
 
 ## 📅 Estado actual
 
-**Fase actual**: FASE 2 completada — Backend Django funcionando (SQLite, sin API todavía)
+**Fase actual**: FASE 3 completada — Backend Django + Frontend React funcionando (aún no conectados entre sí)
 **Última actualización**: 2026-07-01
-**Próxima fase**: FASE 3 — Setup React + Vite + Tailwind frontend
+**Próxima fase**: FASE 4 — Modelos de base de datos (users, menu, sales)
 
 ### Decisiones tomadas
 - Usuario tiene conocimiento básico de programación → se salta lectura previa de mini-clases, prefiere que Claude construya de corrido y lee la documentación después/en paralelo. Seguir comentando código y creando mini-clases igual, pero sin pausar para confirmar entendimiento en cada paso salvo que el usuario lo pida.
@@ -137,7 +137,8 @@ menupos/
 ### Plan por fases
 - ✅ FASE 1: Estructura + docs base + mini-clases iniciales
 - ✅ FASE 2: Setup Django backend (venv, Django+DRF+JWT+CORS instalados, proyecto `config` + apps `users`/`menu`/`sales` creadas, settings.py comentado, migrate y check OK)
-- ⏳ FASE 3: Setup React frontend
+- ✅ FASE 3: Setup React frontend (Vite + React 19 + TypeScript + Tailwind v4 + react-router-dom + axios instalados, App.tsx de bienvenida, build verificado sin errores)
+- ⏳ FASE 4: Modelos de base de datos
 - ⏳ FASE 4: Modelos de base de datos
 - ⏳ FASE 5: Serializers + API REST
 - ⏳ FASE 6: Autenticación JWT

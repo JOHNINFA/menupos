@@ -1,0 +1,4 @@
+/* Con esta línea Tailwind inyecta TODAS sus clases utilitarias
+   (ej: flex, p-4, text-center) sin necesidad de un tailwind.config.js
+   tradicional — Tailwind v4 se configura mayormente en CSS. */
+@import "tailwindcss";
