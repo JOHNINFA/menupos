@@ -125,31 +125,31 @@ menupos/
 
 ## 📅 Estado actual
 
-**Fase actual**: FASE 4 completada — Modelos de base de datos implementados y probados
+**Fase actual**: FASE 5 completada — API REST funcional con permisos por rol y JWT
 **Última actualización**: 2026-07-01
-**Próxima fase**: FASE 5 — API REST con Serializers, ViewSets y autenticación JWT
+**Próxima fase**: FASE 6 — Conectar React con la API (login, dashboard, UI del POS)
 
 ### Decisiones tomadas
 - Usuario tiene conocimiento básico de programación → se salta lectura previa de mini-clases, prefiere que Claude construya de corrido y lee la documentación después/en paralelo. Seguir comentando código y creando mini-clases igual, pero sin pausar para confirmar entendimiento en cada paso salvo que el usuario lo pida.
 - Base de datos: SQLite en desarrollo (no PostgreSQL/Docker todavía) para avanzar rápido. Migrar a PostgreSQL en fase dedicada futura.
 - `AUTH_USER_MODEL = 'users.Usuario'` configurado desde FASE 4 (extiende AbstractUser + campo `rol`: admin/mesero). Requirió resetear db.sqlite3 y migraciones porque se agregó después del primer migrate de FASE 2 (sin pérdida real, BD estaba vacía).
-- Superusuario de prueba creado localmente (username `admin`, rol admin) — SOLO para desarrollo local, credenciales NO están en ningún archivo del repo, no usar en producción.
-- Datos de prueba sembrados vía shell: 1 Categoria, 1 Producto, 1 Venta con 1 DetalleVenta (útiles para probar la API en FASE 5)
+- Superusuario de prueba creado localmente (username `admin`, rol admin) — SOLO para desarrollo local, credenciales NO están en ningún archivo del repo, no usar en producción. También existe `mesero1` de prueba (rol mesero) para probar permisos.
+- Datos de prueba sembrados vía shell/API: Categoria, Producto, y un par de Ventas con detalles (útiles para probar el frontend en FASE 6)
 - on_delete elegidos deliberadamente: PROTECT en Producto→Categoria, Venta→Usuario y DetalleVenta→Producto (evitar romper historial); CASCADE solo en DetalleVenta→Venta
+- Permiso `EsAdminOSoloLectura` (users/permissions.py): cualquier autenticado puede leer menú, solo admin puede escribir. Bug real encontrado y corregido durante pruebas: la versión inicial permitía LEER sin estar logueado (no validaba is_authenticated antes de chequear SAFE_METHODS) — documentado en clases/06 y quiz de fase-05 como caso real de aprendizaje.
+- VentaSerializer.create() calcula `precio_unitario` desde `producto.precio` en el servidor (nunca confía en un precio que mande el frontend) y calcula el `total` sumando los detalles.
+- Endpoints: `/api/categorias/`, `/api/productos/`, `/api/ventas/` (ModelViewSets vía router), `/api/auth/login/` y `/api/auth/refresh/` (JWT), `/api/users/me/` (info del usuario logueado)
 
 ### Plan por fases
 - ✅ FASE 1: Estructura + docs base + mini-clases iniciales
 - ✅ FASE 2: Setup Django backend (venv, Django+DRF+JWT+CORS instalados, proyecto `config` + apps `users`/`menu`/`sales` creadas, settings.py comentado, migrate y check OK)
 - ✅ FASE 3: Setup React frontend (Vite + React 19 + TypeScript + Tailwind v4 + react-router-dom + axios instalados, App.tsx de bienvenida, build verificado sin errores)
 - ✅ FASE 4: Modelos (Usuario con rol, Categoria, Producto, Venta, DetalleVenta) + admin.py registrados + migraciones + verificación vía shell
-- ⏳ FASE 5: API REST (Serializers + ViewSets + JWT)
-- ⏳ FASE 4: Modelos de base de datos
-- ⏳ FASE 5: Serializers + API REST
-- ⏳ FASE 6: Autenticación JWT
-- ⏳ FASE 7: UI del POS en React
-- ⏳ FASE 8: Imágenes en AWS S3
-- ⏳ FASE 9: Deploy
-- ⏳ FASE 10: README final + screenshots + GIF demo
+- ✅ FASE 5: API REST (Serializers anidados, ViewSets, Router, permisos por rol, JWT login/refresh, endpoint /me) — probado end-to-end con curl
+- ⏳ FASE 6: UI del POS en React (login, dashboard, conectar con la API)
+- ⏳ FASE 7: Imágenes en AWS S3
+- ⏳ FASE 8: Deploy (Railway + Vercel)
+- ⏳ FASE 9: README final + screenshots + GIF demo
 
 ---
 

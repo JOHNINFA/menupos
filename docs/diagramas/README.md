@@ -6,7 +6,7 @@ Visualizaciones con **Mermaid** que renderizan automáticamente en GitHub.
 |---|---|---|---|
 | 01 | [Visión general de MenuPOS](01-vision-general.md) | ✅ Listo | Arquitectura |
 | 02 | [Modelo Entidad-Relación (BD)](02-modelo-er.md) | ✅ Listo | ER |
-| 03 | Flujo de autenticación con JWT | 🔜 Próximamente | Sequence |
+| 03 | [Flujo de autenticación con JWT](03-flujo-autenticacion.md) | ✅ Listo | Sequence |
 | 04 | Flujo de crear una venta | 🔜 Próximamente | Sequence |
 | 05 | Subida de imágenes a S3 | 🔜 Próximamente | Sequence |
 | 06 | Deploy: Railway + Vercel | 🔜 Próximamente | Arquitectura |

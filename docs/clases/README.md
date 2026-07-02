@@ -9,12 +9,11 @@ Lecciones cortas por concepto. Léelas **antes** de usar el concepto en código.
 | 02 | [Django, venv y dependencias](02-django-venv-dependencias.md) | ✅ Lista | Clase 01 |
 | 03 | [React, Vite y Tailwind](03-react-vite-tailwind.md) | ✅ Lista | Clase 01 |
 | 04 | [Modelos en Django](04-modelos-django.md) | ✅ Lista | Clase 02 |
-| 05 | Qué es un Serializer (DRF) | 🔜 Próximamente | Clase 04 |
-| 06 | Qué es un ViewSet (DRF) | 🔜 Próximamente | Clase 05 |
-| 07 | Cómo funciona JWT (autenticación) | 🔜 Próximamente | Clase 06 |
-| 08 | Cómo funciona una petición HTTP completa | 🔜 Próximamente | Clase 07 |
-| 09 | Componentes y props en React | 🔜 Próximamente | Clase 03 |
-| 10 | Estado (useState) y efectos (useEffect) | 🔜 Próximamente | Clase 09 |
+| 05 | [Serializers (DRF)](05-serializers.md) | ✅ Lista | Clase 04 |
+| 06 | [ViewSets y Routers (DRF)](06-viewsets-routers.md) | ✅ Lista | Clase 05 |
+| 07 | [JWT en la práctica](07-jwt-autenticacion.md) | ✅ Lista | Clase 06 |
+| 08 | Componentes y props en React | 🔜 Próximamente | Clase 03 |
+| 09 | Estado (useState) y efectos (useEffect) | 🔜 Próximamente | Clase 08 |
 | 11 | Llamar APIs desde React (fetch/axios) | 🔜 Próximamente | Clase 10 |
 | 12 | Qué es AWS S3 y por qué lo usamos | 🔜 Próximamente | — |
 | 13 | Deploy: Railway y Vercel | 🔜 Próximamente | Casi todo |
