@@ -153,6 +153,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Le decimos a Django que use NUESTRO modelo Usuario (con el campo `rol`)
+# en vez del modelo de usuario por defecto. Esto debe declararse ANTES
+# de la primera migración de la app 'users' — cambiarlo después de tener
+# datos reales es complicado, así que lo definimos desde el inicio.
+AUTH_USER_MODEL = 'users.Usuario'
+
 
 # ============================================
 # DJANGO REST FRAMEWORK (DRF)

@@ -125,20 +125,24 @@ menupos/
 
 ## 📅 Estado actual
 
-**Fase actual**: FASE 3 completada — Backend Django + Frontend React funcionando (aún no conectados entre sí)
+**Fase actual**: FASE 4 completada — Modelos de base de datos implementados y probados
 **Última actualización**: 2026-07-01
-**Próxima fase**: FASE 4 — Modelos de base de datos (users, menu, sales)
+**Próxima fase**: FASE 5 — API REST con Serializers, ViewSets y autenticación JWT
 
 ### Decisiones tomadas
 - Usuario tiene conocimiento básico de programación → se salta lectura previa de mini-clases, prefiere que Claude construya de corrido y lee la documentación después/en paralelo. Seguir comentando código y creando mini-clases igual, pero sin pausar para confirmar entendimiento en cada paso salvo que el usuario lo pida.
 - Base de datos: SQLite en desarrollo (no PostgreSQL/Docker todavía) para avanzar rápido. Migrar a PostgreSQL en fase dedicada futura.
-- Apps creadas: `users`, `menu`, `sales` (vacías, sin modelos aún)
+- `AUTH_USER_MODEL = 'users.Usuario'` configurado desde FASE 4 (extiende AbstractUser + campo `rol`: admin/mesero). Requirió resetear db.sqlite3 y migraciones porque se agregó después del primer migrate de FASE 2 (sin pérdida real, BD estaba vacía).
+- Superusuario de prueba creado localmente (username `admin`, rol admin) — SOLO para desarrollo local, credenciales NO están en ningún archivo del repo, no usar en producción.
+- Datos de prueba sembrados vía shell: 1 Categoria, 1 Producto, 1 Venta con 1 DetalleVenta (útiles para probar la API en FASE 5)
+- on_delete elegidos deliberadamente: PROTECT en Producto→Categoria, Venta→Usuario y DetalleVenta→Producto (evitar romper historial); CASCADE solo en DetalleVenta→Venta
 
 ### Plan por fases
 - ✅ FASE 1: Estructura + docs base + mini-clases iniciales
 - ✅ FASE 2: Setup Django backend (venv, Django+DRF+JWT+CORS instalados, proyecto `config` + apps `users`/`menu`/`sales` creadas, settings.py comentado, migrate y check OK)
 - ✅ FASE 3: Setup React frontend (Vite + React 19 + TypeScript + Tailwind v4 + react-router-dom + axios instalados, App.tsx de bienvenida, build verificado sin errores)
-- ⏳ FASE 4: Modelos de base de datos
+- ✅ FASE 4: Modelos (Usuario con rol, Categoria, Producto, Venta, DetalleVenta) + admin.py registrados + migraciones + verificación vía shell
+- ⏳ FASE 5: API REST (Serializers + ViewSets + JWT)
 - ⏳ FASE 4: Modelos de base de datos
 - ⏳ FASE 5: Serializers + API REST
 - ⏳ FASE 6: Autenticación JWT

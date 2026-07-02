@@ -8,7 +8,7 @@ Lecciones cortas por concepto. Léelas **antes** de usar el concepto en código.
 | 01 | [Arquitectura — Frontend, Backend y API](01-arquitectura.md) | ✅ Lista | Clase 00 |
 | 02 | [Django, venv y dependencias](02-django-venv-dependencias.md) | ✅ Lista | Clase 01 |
 | 03 | [React, Vite y Tailwind](03-react-vite-tailwind.md) | ✅ Lista | Clase 01 |
-| 04 | Qué es un Modelo (Django) | 🔜 Próximamente | Clase 02 |
+| 04 | [Modelos en Django](04-modelos-django.md) | ✅ Lista | Clase 02 |
 | 05 | Qué es un Serializer (DRF) | 🔜 Próximamente | Clase 04 |
 | 06 | Qué es un ViewSet (DRF) | 🔜 Próximamente | Clase 05 |
 | 07 | Cómo funciona JWT (autenticación) | 🔜 Próximamente | Clase 06 |

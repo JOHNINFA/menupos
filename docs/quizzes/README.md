@@ -7,7 +7,7 @@ Al final de cada fase, un quiz para reforzar lo aprendido.
 | 01 | [Estructura y conceptos básicos](fase-01.md) | ✅ Listo | POS, Frontend/Backend, API REST, JSON |
 | 02 | [Setup Django](fase-02.md) | ✅ Listo | venv, Django, settings, runserver, CORS, JWT config |
 | 03 | [Setup React](fase-03.md) | ✅ Listo | React, Vite, HMR, Tailwind v4, componentes |
-| 04 | Modelos | 🔜 Próximamente | Models, campos, migraciones |
+| 04 | [Modelos](fase-04.md) | ✅ Listo | Models, campos, ForeignKey, on_delete, migraciones, AUTH_USER_MODEL |
 | 05 | API REST | 🔜 Próximamente | Serializers, ViewSets, URLs |
 | 06 | Autenticación | 🔜 Próximamente | JWT, access/refresh tokens |
 | 07 | UI POS | 🔜 Próximamente | React state, formularios, fetch |
