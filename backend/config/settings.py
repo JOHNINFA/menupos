@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework',                  # Django REST Framework: para crear la API
     'rest_framework_simplejwt',        # Autenticación con tokens JWT
     'corsheaders',                     # Permite que React (otro dominio) llame la API
+    'storages',                        # django-storages: para guardar imágenes en S3
 
     # --- Nuestras apps (el "menú" de secciones de MenuPOS) ---
     'users',   # Usuarios: administrador y mesero
@@ -147,9 +148,34 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # MEDIA = archivos que SUBEN los usuarios (ej: fotos de productos).
-# En desarrollo se guardan localmente; en FASE 8 los moveremos a AWS S3.
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# ---- Almacenamiento de imágenes: local o AWS S3 ----
+# USE_S3 es un "interruptor": si está en true Y hay credenciales, las
+# imágenes se guardan en un bucket de AWS S3; si no, se guardan en el
+# disco local (media/). Así el código funciona igual en ambos modos y
+# activar S3 es solo cambiar variables en .env, sin tocar código.
+# Ver mini-clase: docs/clases/12-aws-s3.md
+USE_S3 = config('USE_S3', default=False, cast=bool)
+
+if USE_S3:
+    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
+
+    # No sobreescribir un archivo si sube otro con el mismo nombre.
+    AWS_S3_FILE_OVERWRITE = False
+    # No firmar las URLs (el bucket sirve las imágenes como públicas).
+    AWS_QUERYSTRING_AUTH = False
+
+    # STORAGES (Django 5): le decimos que los archivos "default" (los que
+    # suben los usuarios, como las fotos de productos) vivan en S3.
+    STORAGES = {
+        'default': {'BACKEND': 'storages.backends.s3.S3Storage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

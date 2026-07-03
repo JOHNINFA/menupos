@@ -158,7 +158,8 @@ Surgieron de que el usuario probó la app y notó que no reflejaba un restaurant
 - ✅ FASE 5: API REST (Serializers anidados, ViewSets, Router, permisos por rol, JWT login/refresh, endpoint /me) — probado end-to-end con curl
 - ✅ FASE 6: Frontend conectado (AuthContext con localStorage, RutaProtegida, cliente Axios con interceptor JWT, páginas Login/Pos/Dashboard, componentes Header/ProductoCard) — probado con backend+frontend corriendo juntos, CORS verificado
 - ✅ 6c/6d/6e: Refinamiento del flujo de negocio (gestión usuarios, comanda imprimible, tipo mesa/llevar, cuenta abierta por mesa, flujo de 4 estados con permisos por rol) — todo probado con curl y en navegador
-- ⏳ FASE 7: Imágenes en AWS S3
+- ✅ FASE 7: Integración AWS S3 lista pero desactivada (django-storages + boto3 instalados; interruptor USE_S3 en settings; local por defecto, se activa con 4 variables en .env). Usuario NO tiene cuenta AWS aún — el código está listo para conectar después. Ver clase 12.
+- ⏳ FASE 8: Deploy (Railway + Vercel)
 - ⏳ FASE 8: Deploy (Railway + Vercel)
 - ⏳ FASE 9: README final + screenshots + GIF demo
 

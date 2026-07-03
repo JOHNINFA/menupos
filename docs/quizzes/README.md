@@ -11,7 +11,7 @@ Al final de cada fase, un quiz para reforzar lo aprendido.
 | 05 | [API REST completa](fase-05.md) | ✅ Listo | Serializers, ViewSets, Routers, permisos por rol, JWT |
 | 06 | [UI del POS en React](fase-06.md) | ✅ Listo | Componentes, props, useState/useEffect, Axios, Context API |
 | 06b | [Flujo de negocio](fase-06b.md) | ✅ Listo | Máquina de estados, permisos por rol, cuenta abierta, seguridad backend |
-| 07 | AWS S3 | 🔜 Próximamente | Buckets, permisos, django-storages |
+| 07 | [AWS S3](fase-07.md) | ✅ Listo | Buckets, USE_S3, django-storages, boto3 |
 | 08 | Deploy | 🔜 Próximamente | Railway, Vercel, variables de entorno |
 
 ---

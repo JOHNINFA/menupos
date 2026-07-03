@@ -16,7 +16,7 @@ Lecciones cortas por concepto. Léelas **antes** de usar el concepto en código.
 | 09 | [Estado (useState) y efectos (useEffect)](09-estado-efectos.md) | ✅ Lista | Clase 08 |
 | 10 | [Consumir la API con Axios](10-consumir-api-axios.md) | ✅ Lista | Clase 09, 07 |
 | 11 | [Estados de un pedido y reglas de negocio](11-estados-y-reglas-negocio.md) | ✅ Lista | Clase 05, 06 |
-| 12 | Qué es AWS S3 y por qué lo usamos | 🔜 Próximamente | — |
+| 12 | [Imágenes en AWS S3](12-aws-s3.md) | ✅ Lista | Clase 02 |
 | 13 | Deploy: Railway y Vercel | 🔜 Próximamente | Casi todo |
 
 > 💡 Esta lista crece a medida que avanzamos en el proyecto.

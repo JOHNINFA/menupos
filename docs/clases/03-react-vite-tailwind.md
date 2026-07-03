@@ -139,11 +139,11 @@ frontend/
 
 ## 🧠 Quiz rápido
 
-1. ¿Qué es un componente en React? Da un ejemplo de MenuPOS.
-2. ¿Cuál es la ventaja principal de Vite frente a herramientas más viejas?
-3. ¿Qué significa HMR?
-4. ¿Cómo se aplican estilos con Tailwind, en una frase?
-5. ¿Qué hace `npm run build` a diferencia de `npm run dev`?
+1. ¿Qué es un componente en React? Da un ejemplo de MenuPOS. es un pieza que se puede reutilizar y es mas facil de actualizar
+2. ¿Cuál es la ventaja principal de Vite frente a herramientas más viejas? es mas rapido y arranca el servido de desarollo en mili segunod y no hay necesidad de estar recargando tod la pagina
+3. ¿Qué significa HMR?  Hot Module Replacement: actualiza solo la parte que cambió sin recargar toda la página
+4. ¿Cómo se aplican estilos con Tailwind, en una frase?  se aplica con clases utilitarias
+5. ¿Qué hace `npm run build` a diferencia de `npm run dev`? la prime es para ya produccion y la segunda es para desarrollo
 
 > 📝 Respuestas en el quiz de FASE 3.
 
