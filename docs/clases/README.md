@@ -15,7 +15,8 @@ Lecciones cortas por concepto. Léelas **antes** de usar el concepto en código.
 | 08 | [Componentes y props en React](08-componentes-props.md) | ✅ Lista | Clase 03 |
 | 09 | [Estado (useState) y efectos (useEffect)](09-estado-efectos.md) | ✅ Lista | Clase 08 |
 | 10 | [Consumir la API con Axios](10-consumir-api-axios.md) | ✅ Lista | Clase 09, 07 |
-| 11 | Qué es AWS S3 y por qué lo usamos | 🔜 Próximamente | — |
-| 12 | Deploy: Railway y Vercel | 🔜 Próximamente | Casi todo |
+| 11 | [Estados de un pedido y reglas de negocio](11-estados-y-reglas-negocio.md) | ✅ Lista | Clase 05, 06 |
+| 12 | Qué es AWS S3 y por qué lo usamos | 🔜 Próximamente | — |
+| 13 | Deploy: Railway y Vercel | 🔜 Próximamente | Casi todo |
 
 > 💡 Esta lista crece a medida que avanzamos en el proyecto.

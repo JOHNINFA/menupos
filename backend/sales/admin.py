@@ -11,6 +11,6 @@ class DetalleVentaInline(admin.TabularInline):
 
 @admin.register(Venta)
 class VentaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'mesero', 'fecha', 'total', 'estado')
-    list_filter = ('estado', 'fecha')
+    list_display = ('id', 'mesero', 'tipo', 'mesa', 'fecha', 'total', 'estado')
+    list_filter = ('estado', 'tipo', 'fecha')
     inlines = [DetalleVentaInline]

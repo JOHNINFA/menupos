@@ -10,6 +10,8 @@ import type { Producto, ItemCarrito } from '../types'
 export function Pos() {
   const [productos, setProductos] = useState<Producto[]>([])
   const [carrito, setCarrito] = useState<ItemCarrito[]>([])
+  const [tipo, setTipo] = useState<'mesa' | 'llevar'>('mesa')
+  const [mesa, setMesa] = useState('')
   const [mensaje, setMensaje] = useState('')
 
   // Se ejecuta UNA vez al entrar a la pantalla: pide el menú a la API.
@@ -41,22 +43,35 @@ export function Pos() {
     0
   )
 
-  async function cobrar() {
-    if (carrito.length === 0) return
+  // Falta el número de mesa solo cuando el pedido es de tipo "mesa".
+  const faltaMesa = tipo === 'mesa' && !mesa
+
+  async function enviarPedido() {
+    if (carrito.length === 0 || faltaMesa) return
     setMensaje('')
     try {
       // El backend recalcula precio_unitario y total desde el servidor
-      // (ver sales/serializers.py) — el frontend solo manda producto+cantidad.
+      // (ver sales/serializers.py) — el frontend solo manda tipo/mesa/detalles.
+      // La venta queda en estado 'pedido' hasta que se entregue y cobre. Si es una
+      // mesa que ya tiene cuenta abierta, el backend suma estos productos
+      // a esa cuenta en vez de crear otra (flujo real, FASE 6d).
       await api.post('/ventas/', {
+        tipo,
+        mesa: tipo === 'mesa' ? Number(mesa) : null,
         detalles: carrito.map((item) => ({
           producto: item.producto.id,
           cantidad: item.cantidad,
         })),
       })
       setCarrito([])
-      setMensaje('✅ Venta registrada con éxito')
+      setMesa('')
+      setMensaje(
+        tipo === 'mesa'
+          ? `✅ Pedido enviado a la cuenta de la mesa ${mesa}`
+          : '✅ Pedido para llevar enviado'
+      )
     } catch {
-      setMensaje('❌ Error al registrar la venta')
+      setMensaje('❌ Error al registrar el pedido')
     }
   }
 
@@ -65,9 +80,9 @@ export function Pos() {
       <Header />
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Menú de productos */}
+        {/* Menú de productos: solo los marcados como disponibles por el admin */}
         <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {productos.map((producto) => (
+          {productos.filter((p) => p.disponible).map((producto) => (
             <ProductoCard
               key={producto.id}
               producto={producto}
@@ -82,6 +97,44 @@ export function Pos() {
         {/* Carrito */}
         <div className="bg-white rounded-lg shadow p-4 h-fit">
           <h2 className="font-bold text-lg mb-4">🧾 Pedido actual</h2>
+
+          {/* Tipo de pedido: define si se pide número de mesa o no */}
+          <label className="block text-sm text-slate-600 mb-1">Tipo de pedido</label>
+          <div className="flex gap-2 mb-3">
+            <button
+              type="button"
+              onClick={() => setTipo('mesa')}
+              className={`flex-1 py-2 rounded text-sm ${
+                tipo === 'mesa' ? 'bg-orange-600 text-white' : 'bg-slate-200'
+              }`}
+            >
+              🍽️ Mesa
+            </button>
+            <button
+              type="button"
+              onClick={() => setTipo('llevar')}
+              className={`flex-1 py-2 rounded text-sm ${
+                tipo === 'llevar' ? 'bg-orange-600 text-white' : 'bg-slate-200'
+              }`}
+            >
+              🥡 Para llevar
+            </button>
+          </div>
+
+          {/* El número de mesa solo aparece si el tipo es "mesa" */}
+          {tipo === 'mesa' && (
+            <>
+              <label className="block text-sm text-slate-600 mb-1">Número de mesa</label>
+              <input
+                type="number"
+                min={1}
+                value={mesa}
+                onChange={(e) => setMesa(e.target.value)}
+                placeholder="Ej: 5"
+                className="w-full border rounded px-3 py-2 mb-4"
+              />
+            </>
+          )}
 
           {carrito.length === 0 && (
             <p className="text-slate-400 text-sm">Toca un producto para agregarlo</p>
@@ -112,11 +165,11 @@ export function Pos() {
           </div>
 
           <button
-            onClick={cobrar}
-            disabled={carrito.length === 0}
+            onClick={enviarPedido}
+            disabled={carrito.length === 0 || faltaMesa}
             className="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
           >
-            Cobrar
+            Enviar pedido
           </button>
 
           {mensaje && <p className="mt-3 text-sm">{mensaje}</p>}

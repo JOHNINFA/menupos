@@ -15,7 +15,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from menu.views import CategoriaViewSet, ProductoViewSet
 from sales.views import VentaViewSet
-from users.views import MeView
+from users.views import MeView, UsuarioViewSet
 
 # El Router genera automáticamente las 6 rutas típicas (GET/POST/PUT/PATCH/DELETE)
 # para cada ViewSet registrado. Ver clase 06 para el detalle completo.
@@ -23,6 +23,7 @@ router = DefaultRouter()
 router.register('categorias', CategoriaViewSet)
 router.register('productos', ProductoViewSet)
 router.register('ventas', VentaViewSet)
+router.register('usuarios', UsuarioViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

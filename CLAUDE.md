@@ -127,9 +127,17 @@ menupos/
 
 ## 📅 Estado actual
 
-**Fase actual**: FASE 6 completada — Frontend conectado a la API (login, POS, dashboard funcionando end-to-end)
-**Última actualización**: 2026-07-01
+**Fase actual**: FASE 6 completada + rondas 6c/6d/6e de refinamiento del flujo de negocio (a partir de feedback real del usuario probando la app)
+**Última actualización**: 2026-07-02
 **Próxima fase**: FASE 7 — Imágenes de productos en AWS S3
+
+### Refinamientos post-FASE 6 (rondas 6c/6d/6e)
+Surgieron de que el usuario probó la app y notó que no reflejaba un restaurante real:
+- **6c**: Gestión de usuarios (admin crea meseros/admins vía `/api/usuarios/`, UsuarioCreateSerializer con password write_only + create_user para hashear). Comanda imprimible (`/comanda/:id`, usa window.print + print:hidden de Tailwind). Botones de estado en Dashboard.
+- **6d**: Campo `tipo` en Venta (mesa/llevar). `mesa` ahora nullable (para llevar no tiene). **Cuenta abierta por mesa**: si una mesa con cuenta abierta pide más, VentaSerializer.create() SUMA los productos a la venta existente en vez de crear otra (filtra por estado en ESTADOS_ABIERTOS). Selector Mesa/Para llevar en el POS.
+- **6e**: Flujo de 4 estados: **pedido → entregado → pagado** (+ cancelado). Reemplazó el pendiente/pagada/cancelada anterior. Migración de DATOS (0005) convirtió los estados viejos sin perder registros. El mesero marca `entregado`; solo admin marca `pagado`/`cancelado` (chequeo fino dentro de la acción `marcar_estado`, no solo en la permission class). Al agregar productos a una cuenta abierta, vuelve a `pedido`.
+- Nuevas páginas frontend: AdminUsuarios, ComandaPrint. Nuevo componente RutaAdmin.
+- Bugs reales encontrados y corregidos en estas rondas (documentar en quiz): permiso de lectura sin auth; `disponible` quedaba False por defecto en multipart; `marcar_estado` compartía verbo POST con create (se reforzó usando view.action).
 
 ### Decisiones tomadas
 - Usuario tiene conocimiento básico de programación → se salta lectura previa de mini-clases, prefiere que Claude construya de corrido y lee la documentación después/en paralelo. Seguir comentando código y creando mini-clases igual, pero sin pausar para confirmar entendimiento en cada paso salvo que el usuario lo pida.
@@ -149,6 +157,7 @@ menupos/
 - ✅ FASE 4: Modelos (Usuario con rol, Categoria, Producto, Venta, DetalleVenta) + admin.py registrados + migraciones + verificación vía shell
 - ✅ FASE 5: API REST (Serializers anidados, ViewSets, Router, permisos por rol, JWT login/refresh, endpoint /me) — probado end-to-end con curl
 - ✅ FASE 6: Frontend conectado (AuthContext con localStorage, RutaProtegida, cliente Axios con interceptor JWT, páginas Login/Pos/Dashboard, componentes Header/ProductoCard) — probado con backend+frontend corriendo juntos, CORS verificado
+- ✅ 6c/6d/6e: Refinamiento del flujo de negocio (gestión usuarios, comanda imprimible, tipo mesa/llevar, cuenta abierta por mesa, flujo de 4 estados con permisos por rol) — todo probado con curl y en navegador
 - ⏳ FASE 7: Imágenes en AWS S3
 - ⏳ FASE 8: Deploy (Railway + Vercel)
 - ⏳ FASE 9: README final + screenshots + GIF demo

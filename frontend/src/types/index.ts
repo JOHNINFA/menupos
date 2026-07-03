@@ -40,8 +40,10 @@ export interface Venta {
   mesero: number
   mesero_nombre: string
   fecha: string
+  tipo: 'mesa' | 'llevar'
+  mesa: number | null
   total: string
-  estado: 'pendiente' | 'pagada' | 'cancelada'
+  estado: 'pedido' | 'entregado' | 'pagado' | 'cancelado'
   detalles: DetalleVenta[]
 }
 

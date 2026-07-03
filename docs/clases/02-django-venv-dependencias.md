@@ -201,11 +201,13 @@ menupos/backend/
 
 ## 🧠 Quiz rápido
 
-1. ¿Qué es un framework, en una frase?
-2. ¿Por qué usamos Django y no Flask para MenuPOS?
-3. ¿Para qué sirve un entorno virtual (venv)?
-4. ¿Cuál es la diferencia entre `pip install django` y `pip install -r requirements.txt`?
-5. ¿Por qué NO subimos la carpeta `venv/` a Git?
+1. ¿Qué es un framework, en una frase? un sistem prediseñado
+2. ¿Por qué usamos Django y no Flask para MenuPOS? djagno es un framework que trae admin automatico y sistema de autenticacion robusto
+3. ¿Para qué sirve un entorno virtual (venv)? para manter un entorno aislado
+4. ¿Cuál es la diferencia entre `pip install django` y `pip install -r requirements.txt`? pip install django → instala UNA librería (django)
+pip install -r requirements.txt → instala TODAS las de la lista, con sus versiones exactas
+5. ¿Por qué NO subimos la carpeta `venv/` a Git? la carpeta venv es un entorno local Pesa mucho (cientos de MB)
+Se regenera fácil con pip install -r requirements.txt Subirla sería desperdiciar espacio, cuando cualquiera puede recrearla desde el requirements.txt
 
 > 📝 Respuestas al final del quiz de FASE 2.
 

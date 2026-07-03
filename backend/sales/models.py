@@ -18,9 +18,21 @@ class Venta(models.Model):
     """Una transacción completa: un pedido cobrado a un cliente."""
 
     class Estado(models.TextChoices):
-        PENDIENTE = 'pendiente', 'Pendiente'
-        PAGADA = 'pagada', 'Pagada'
-        CANCELADA = 'cancelada', 'Cancelada'
+        # Flujo real: el mesero toma el PEDIDO → lo lleva a la mesa y marca
+        # ENTREGADO → el cajero marca PAGADO cuando el cliente paga.
+        PEDIDO = 'pedido', 'Pedido'
+        ENTREGADO = 'entregado', 'Entregado'
+        PAGADO = 'pagado', 'Pagado'
+        CANCELADO = 'cancelado', 'Cancelado'
+
+    # Estados en los que una cuenta de mesa sigue "abierta" (el cliente
+    # está en el local y aún no ha pagado): a esta cuenta se le pueden
+    # sumar más productos. Ver create() en el serializer.
+    ESTADOS_ABIERTOS = [Estado.PEDIDO, Estado.ENTREGADO]
+
+    class Tipo(models.TextChoices):
+        MESA = 'mesa', 'Mesa'
+        LLEVAR = 'llevar', 'Para llevar'
 
     # settings.AUTH_USER_MODEL en vez de importar Usuario directamente:
     # es la forma recomendada por Django para referenciar el modelo de
@@ -33,21 +45,35 @@ class Venta(models.Model):
 
     fecha = models.DateTimeField(auto_now_add=True)
 
-    # Se calcula sumando los subtotales de cada DetalleVenta (lo haremos
-    # en la FASE 5 cuando conectemos esto a la API).
+    tipo = models.CharField(
+        max_length=10,
+        choices=Tipo.choices,
+        default=Tipo.MESA,
+        help_text='Mesa (se atiende en el local) o Para llevar.',
+    )
+
+    # Número de mesa. null=True porque un pedido "Para llevar" NO tiene mesa.
+    # Cuando tipo=mesa, el serializer valida que venga un número.
+    mesa = models.PositiveIntegerField(
+        null=True, blank=True, help_text='Número de mesa (solo si tipo=mesa).'
+    )
+
+    # Se calcula sumando los subtotales de cada DetalleVenta (ver
+    # sales/serializers.py, VentaSerializer.create()).
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     estado = models.CharField(
         max_length=10,
         choices=Estado.choices,
-        default=Estado.PENDIENTE,
+        default=Estado.PEDIDO,
     )
 
     class Meta:
         ordering = ['-fecha']  # Las ventas más recientes primero
 
     def __str__(self):
-        return f'Venta #{self.id} - {self.get_estado_display()} - ${self.total}'
+        ubicacion = f'Mesa {self.mesa}' if self.tipo == self.Tipo.MESA else 'Para llevar'
+        return f'Venta #{self.id} - {ubicacion} - {self.get_estado_display()} - ${self.total}'
 
 
 class DetalleVenta(models.Model):

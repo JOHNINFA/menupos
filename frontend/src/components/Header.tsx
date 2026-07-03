@@ -17,6 +17,17 @@ export function Header() {
         <Link to="/dashboard" className="hover:text-orange-400">
           Dashboard
         </Link>
+        {/* Solo el admin ve estos enlaces de gestión */}
+        {user?.rol === 'admin' && (
+          <>
+            <Link to="/menu" className="hover:text-orange-400">
+              Gestión de Menú
+            </Link>
+            <Link to="/usuarios" className="hover:text-orange-400">
+              Usuarios
+            </Link>
+          </>
+        )}
       </div>
       <div className="flex items-center gap-4 text-sm">
         <span>

@@ -17,6 +17,14 @@ class ProductoSerializer(serializers.ModelSerializer):
     # de su ID, para que el frontend no tenga que hacer una petición aparte.
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
 
+    # BooleanField declarado explícitamente con default=True: sin esto,
+    # DRF trata un campo ausente en peticiones multipart/form-data (como
+    # cuando se sube una imagen) como False en vez de usar el default=True
+    # del modelo (mismo comportamiento que un checkbox HTML sin marcar).
+    # Bug real encontrado: un producto creado sin enviar "disponible"
+    # quedaba oculto por defecto en vez de visible.
+    disponible = serializers.BooleanField(default=True)
+
     class Meta:
         model = Producto
         fields = [
