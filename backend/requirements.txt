@@ -7,3 +7,6 @@ python-decouple==3.8
 Pillow==11.0.0
 django-storages==1.14.6
 boto3==1.43.40
+gunicorn==26.0.0
+dj-database-url==3.1.2
+whitenoise==6.12.0

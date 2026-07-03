@@ -3,9 +3,14 @@
 
 import axios from 'axios'
 
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
-})
+// La URL del backend cambia según el entorno:
+// - En desarrollo: http://localhost:8000/api (valor por defecto)
+// - En producción (Vercel): se lee de la variable VITE_API_URL, que
+//   apuntará al backend en Railway. Las variables de Vite deben empezar
+//   con VITE_ para que el navegador pueda verlas.
+const baseURL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api'
+
+const api = axios.create({ baseURL })
 
 // Interceptor: se ejecuta ANTES de cada petición. Inyecta el token
 // automáticamente, para no repetir el header en cada llamada.

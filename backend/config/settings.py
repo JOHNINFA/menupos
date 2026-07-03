@@ -11,6 +11,7 @@ Ver la mini-clase: docs/clases/02-django-venv-dependencias.md
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+import dj_database_url
 
 # BASE_DIR = la carpeta raíz del backend (donde está manage.py).
 # Se usa para construir rutas relativas sin importar en qué compu corra.
@@ -73,6 +74,10 @@ INSTALLED_APPS = [
 # El ORDEN importa: CorsMiddleware debe ir bien arriba, antes de CommonMiddleware.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise sirve los archivos estáticos (CSS/JS del admin de Django)
+    # en producción sin necesitar un servidor web aparte. Va justo después
+    # de SecurityMiddleware, como pide su documentación.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',        # ← agregado para CORS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -104,20 +109,27 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # ============================================
-# BASE DE DATOS
+# BASE DE DATOS — configuración dual (FASE 8)
 # ============================================
-# Decisión de FASE 2: usamos SQLite (un solo archivo, cero configuración)
-# para desarrollar rápido sin depender de Docker/PostgreSQL todavía.
+# Regla: si existe la variable DATABASE_URL (la pone Railway en producción),
+# usamos PostgreSQL; si no existe (tu PC), seguimos con SQLite local.
 #
-# Migraremos a PostgreSQL en una fase dedicada más adelante (cuando
-# preparemos Docker Compose), porque en producción SIEMPRE se usa
-# un motor de base de datos real, no SQLite.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Así el MISMO código corre con SQLite en desarrollo (cero configuración)
+# y con PostgreSQL en producción (robusto, no se borra al redesplegar),
+# sin que tengas que instalar Postgres en tu máquina.
+DATABASE_URL = config('DATABASE_URL', default='')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # ============================================
@@ -146,6 +158,10 @@ USE_TZ = True
 # ARCHIVOS ESTÁTICOS Y MEDIA
 # ============================================
 STATIC_URL = 'static/'
+
+# STATIC_ROOT: carpeta donde `collectstatic` junta todos los estáticos
+# para que WhiteNoise los sirva en producción. No se usa en desarrollo.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # MEDIA = archivos que SUBEN los usuarios (ej: fotos de productos).
 MEDIA_URL = '/media/'
@@ -227,6 +243,15 @@ SIMPLE_JWT = {
 # Eso es justo lo que configuramos aquí.
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:5173',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+
+# CSRF_TRUSTED_ORIGINS: en producción Django exige declarar los dominios
+# (con https://) desde los que se aceptan peticiones que cambian datos.
+# Se llena con la URL del frontend en Vercel (ej: https://menupos.vercel.app).
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
     default='http://localhost:5173',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
