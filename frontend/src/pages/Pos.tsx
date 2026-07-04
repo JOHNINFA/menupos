@@ -1,5 +1,5 @@
 // Pantalla principal del POS: lista de productos + carrito + cobro.
-// Ver mini-clases: 08 (componentes), 09 (useState/useEffect), 10 (axios)
+// Ver mini-clases: 08 (componentes), 09 (useState/useEffect), 10 (fetch/API)
 
 import { useState, useEffect } from 'react'
 import api from '../api/client'

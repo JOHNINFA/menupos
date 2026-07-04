@@ -104,7 +104,7 @@ Donde:
 npm create vite@latest frontend -- --template react-ts   # Arma el esqueleto
 npm install                                                # Instala dependencias base
 npm install tailwindcss @tailwindcss/vite                  # Tailwind CSS v4
-npm install react-router-dom axios                          # Rutas + peticiones HTTP
+npm install react-router-dom                                # Rutas (peticiones HTTP: fetch nativo)
 ```
 
 | Paquete | Para qué sirve |
@@ -114,7 +114,8 @@ npm install react-router-dom axios                          # Rutas + peticiones
 | `typescript` | JavaScript con "tipos" (detecta errores antes de ejecutar) |
 | `tailwindcss` + `@tailwindcss/vite` | Estilos utilitarios |
 | `react-router-dom` | Manejar rutas (ej: `/login`, `/pos`, `/dashboard`) — lo usaremos en FASE 6 |
-| `axios` | Hacer peticiones HTTP a nuestra API de Django — lo usaremos en FASE 5-6 |
+
+> 💡 Para las peticiones HTTP a la API usamos **`fetch` nativo** del navegador (cero dependencias). Al inicio del proyecto usamos `axios`, pero migramos a `fetch` para reducir dependencias externas. Ver clase 10.
 
 ---
 

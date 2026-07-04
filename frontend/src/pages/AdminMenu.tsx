@@ -55,9 +55,9 @@ export function AdminMenu() {
     if (imagen) formData.append('imagen', imagen)
 
     try {
-      await api.post('/productos/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      // Al pasar un FormData, el cliente detecta que es multipart y deja
+      // que el navegador ponga el Content-Type correcto automáticamente.
+      await api.post('/productos/', formData)
       setNombre('')
       setDescripcion('')
       setPrecio('')

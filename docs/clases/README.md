@@ -14,7 +14,7 @@ Lecciones cortas por concepto. Léelas **antes** de usar el concepto en código.
 | 07 | [JWT en la práctica](07-jwt-autenticacion.md) | ✅ Lista | Clase 06 |
 | 08 | [Componentes y props en React](08-componentes-props.md) | ✅ Lista | Clase 03 |
 | 09 | [Estado (useState) y efectos (useEffect)](09-estado-efectos.md) | ✅ Lista | Clase 08 |
-| 10 | [Consumir la API con Axios](10-consumir-api-axios.md) | ✅ Lista | Clase 09, 07 |
+| 10 | [Consumir la API con fetch](10-consumir-api.md) | ✅ Lista | Clase 09, 07 |
 | 11 | [Estados de un pedido y reglas de negocio](11-estados-y-reglas-negocio.md) | ✅ Lista | Clase 05, 06 |
 | 12 | [Imágenes en AWS S3](12-aws-s3.md) | ✅ Lista | Clase 02 |
 | 13 | Deploy: Railway y Vercel | 🔜 Próximamente | Casi todo |

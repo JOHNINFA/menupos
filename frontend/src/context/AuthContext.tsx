@@ -1,5 +1,5 @@
 // Contexto de autenticación. Ver mini-clase:
-// docs/clases/10-consumir-api-axios.md (sección "Context API")
+// docs/clases/10-consumir-api.md (sección "Context API")
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     api
-      .get('/users/me/')
+      .get<Usuario>('/users/me/')
       .then((res) => setUser(res.data))
       .catch(() => {
         // Token vencido o inválido: limpiamos todo y que vuelva a loguearse
@@ -42,11 +42,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function login(username: string, password: string) {
-    const res = await api.post('/auth/login/', { username, password })
+    const res = await api.post<{ access: string; refresh: string }>(
+      '/auth/login/',
+      { username, password }
+    )
     localStorage.setItem('access', res.data.access)
     localStorage.setItem('refresh', res.data.refresh)
 
-    const me = await api.get('/users/me/')
+    const me = await api.get<Usuario>('/users/me/')
     setUser(me.data)
   }
 
