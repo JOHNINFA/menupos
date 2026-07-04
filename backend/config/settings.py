@@ -38,6 +38,14 @@ ALLOWED_HOSTS = config(
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
+# Railway le pone a cada app un dominio (ej: menupos-production.up.railway.app)
+# y lo expone en la variable RAILWAY_PUBLIC_DOMAIN. Lo agregamos solo si
+# existe, para que en producción Django acepte peticiones a ese dominio
+# sin que tengamos que escribirlo a mano.
+RAILWAY_PUBLIC_DOMAIN = config('RAILWAY_PUBLIC_DOMAIN', default='')
+if RAILWAY_PUBLIC_DOMAIN:
+    ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
+
 
 # ============================================
 # APLICACIONES INSTALADAS
@@ -255,3 +263,7 @@ CSRF_TRUSTED_ORIGINS = config(
     default='http://localhost:5173',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
+
+# También confiamos en el propio dominio de Railway (para el admin de Django).
+if RAILWAY_PUBLIC_DOMAIN:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{RAILWAY_PUBLIC_DOMAIN}')
