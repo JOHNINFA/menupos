@@ -1,0 +1,40 @@
+# render.yaml — "receta" de despliegue para Render (FASE 8)
+#
+# Render lee este archivo (deploy tipo "Blueprint") y crea automáticamente:
+#   1. Una base de datos PostgreSQL gratuita
+#   2. El servicio web del backend (Django) conectado a esa base de datos
+#
+# Así el deploy es casi automático: en Render solo apuntas al repo y aplicas.
+
+databases:
+  - name: menupos-db
+    plan: free              # Base de datos PostgreSQL gratuita
+
+services:
+  - type: web
+    name: menupos-backend
+    runtime: python
+    rootDir: backend        # El backend vive en la subcarpeta backend/
+    plan: free              # Servicio web gratuito
+
+    # Build: instala dependencias, junta los estáticos y aplica migraciones.
+    # (En Render las migraciones van en el build, no hay fase "release".)
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+
+    # Start: arranca el servidor de producción gunicorn.
+    startCommand: "gunicorn config.wsgi"
+
+    envVars:
+      # Render inyecta aquí la URL de la base de datos que creó arriba.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: menupos-db
+          property: connectionString
+
+      # SECRET_KEY se genera sola y segura (no la escribimos en el repo).
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+
+      # En producción DEBUG SIEMPRE debe ir en false.
+      - key: DJANGO_DEBUG
+        value: "false"

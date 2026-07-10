@@ -38,13 +38,16 @@ ALLOWED_HOSTS = config(
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
-# Railway le pone a cada app un dominio (ej: menupos-production.up.railway.app)
-# y lo expone en la variable RAILWAY_PUBLIC_DOMAIN. Lo agregamos solo si
-# existe, para que en producción Django acepte peticiones a ese dominio
-# sin que tengamos que escribirlo a mano.
+# Cada plataforma de deploy le pone a la app un dominio y lo expone en una
+# variable de entorno. Lo agregamos a ALLOWED_HOSTS solo si existe, para
+# que en producción Django acepte peticiones a ese dominio sin escribirlo
+# a mano. Soportamos Railway y Render.
 RAILWAY_PUBLIC_DOMAIN = config('RAILWAY_PUBLIC_DOMAIN', default='')
-if RAILWAY_PUBLIC_DOMAIN:
-    ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
+RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default='')
+
+for dominio in (RAILWAY_PUBLIC_DOMAIN, RENDER_EXTERNAL_HOSTNAME):
+    if dominio:
+        ALLOWED_HOSTS.append(dominio)
 
 
 # ============================================
@@ -264,6 +267,8 @@ CSRF_TRUSTED_ORIGINS = config(
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
-# También confiamos en el propio dominio de Railway (para el admin de Django).
-if RAILWAY_PUBLIC_DOMAIN:
-    CSRF_TRUSTED_ORIGINS.append(f'https://{RAILWAY_PUBLIC_DOMAIN}')
+# También confiamos en el propio dominio de la plataforma (para el admin
+# de Django, que sí usa CSRF).
+for dominio in (RAILWAY_PUBLIC_DOMAIN, RENDER_EXTERNAL_HOSTNAME):
+    if dominio:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{dominio}')
