@@ -17,8 +17,9 @@ services:
     rootDir: backend        # El backend vive en la subcarpeta backend/
     plan: free              # Servicio web gratuito
 
-    # Build: instala dependencias, junta los estáticos, aplica migraciones y crea admin.
-    # (En Render las migraciones van en el build, no hay fase "release".)
+    # Build: instala dependencias, junta estáticos, migra la BD y crea el
+    # admin (create_admin es un comando que lee las credenciales de las
+    # variables de entorno; si el admin ya existe, no hace nada).
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py create_admin"
 
     # Start: arranca el servidor de producción gunicorn.
@@ -39,18 +40,19 @@ services:
       - key: DJANGO_DEBUG
         value: "false"
 
-      # Credenciales del superusuario (se crea automáticamente en el primer deploy)
+      # Datos del admin. El username/email pueden ir aquí (no son secretos).
       - key: DJANGO_SUPERUSER_USERNAME
         value: "admin"
-      
       - key: DJANGO_SUPERUSER_EMAIL
         value: "admin@menupos.com"
-      
+
+      # ⚠️ La CONTRASEÑA NO se escribe aquí (esto se sube a GitHub público).
+      # sync: false = Render la pide en su panel al desplegar y la guarda
+      # cifrada, sin que quede en el repositorio.
       - key: DJANGO_SUPERUSER_PASSWORD
-        value: "AdminMenuPOS2026!"
-      
-      # CORS: permitir peticiones desde el frontend en Vercel
-      # Nota: Vercel te da un dominio tipo https://menupos.vercel.app
-      # Actualizaremos esto cuando tengas el dominio exacto
+        sync: false
+
+      # CORS: qué frontend puede llamar a la API. Lo ajustaremos con el
+      # dominio real de Vercel cuando despleguemos el frontend.
       - key: CORS_ALLOWED_ORIGINS
-        value: "http://localhost:5173,https://menupos.vercel.app,https://*.vercel.app"
+        sync: false
