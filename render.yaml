@@ -17,9 +17,9 @@ services:
     rootDir: backend        # El backend vive en la subcarpeta backend/
     plan: free              # Servicio web gratuito
 
-    # Build: instala dependencias, junta los estáticos y aplica migraciones.
+    # Build: instala dependencias, junta los estáticos, aplica migraciones y crea admin.
     # (En Render las migraciones van en el build, no hay fase "release".)
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py create_admin"
 
     # Start: arranca el servidor de producción gunicorn.
     startCommand: "gunicorn config.wsgi"
@@ -38,3 +38,13 @@ services:
       # En producción DEBUG SIEMPRE debe ir en false.
       - key: DJANGO_DEBUG
         value: "false"
+
+      # Credenciales del superusuario (se crea automáticamente en el primer deploy)
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: "admin"
+      
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: "admin@menupos.com"
+      
+      - key: DJANGO_SUPERUSER_PASSWORD
+        value: "AdminMenuPOS2026!"
