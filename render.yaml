@@ -48,3 +48,9 @@ services:
       
       - key: DJANGO_SUPERUSER_PASSWORD
         value: "AdminMenuPOS2026!"
+      
+      # CORS: permitir peticiones desde el frontend en Vercel
+      # Nota: Vercel te da un dominio tipo https://menupos.vercel.app
+      # Actualizaremos esto cuando tengas el dominio exacto
+      - key: CORS_ALLOWED_ORIGINS
+        value: "http://localhost:5173,https://menupos.vercel.app,https://*.vercel.app"
