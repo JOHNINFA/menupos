@@ -99,6 +99,15 @@ menupos/
 
 ---
 
+## 🚀 Demo en vivo
+
+**App**: [menupos.vercel.app](https://menupos.vercel.app)
+
+> Para acceso de prueba (credenciales de demo), contáctame por los medios de abajo.
+> (Las credenciales NO se publican aquí por seguridad.)
+
+---
+
 ## 📄 Licencia
 
 Proyecto educativo de portafolio. Libre uso con atribución.
