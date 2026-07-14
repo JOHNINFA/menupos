@@ -21,6 +21,14 @@ export function AdminMenu() {
   const [imagen, setImagen] = useState<File | null>(null)
   const [mensaje, setMensaje] = useState('')
 
+  // --- Edición de un producto existente (nombre/precio/categoría/descripción) ---
+  // Guardamos el id que se está editando; null = ninguno en edición.
+  const [editandoId, setEditandoId] = useState<number | null>(null)
+  const [editNombre, setEditNombre] = useState('')
+  const [editDescripcion, setEditDescripcion] = useState('')
+  const [editPrecio, setEditPrecio] = useState('')
+  const [editCategoriaId, setEditCategoriaId] = useState('')
+
   function cargarDatos() {
     api.get<Categoria[]>('/categorias/').then((res) => setCategorias(res.data))
     api.get<Producto[]>('/productos/').then((res) => setProductos(res.data))
@@ -88,6 +96,29 @@ export function AdminMenu() {
     const formData = new FormData()
     formData.append('imagen', file)
     await api.patch(`/productos/${id}/`, formData)
+    cargarDatos()
+  }
+
+  function iniciarEdicion(producto: Producto) {
+    setEditandoId(producto.id)
+    setEditNombre(producto.nombre)
+    setEditDescripcion(producto.descripcion)
+    setEditPrecio(producto.precio)
+    setEditCategoriaId(String(producto.categoria))
+  }
+
+  function cancelarEdicion() {
+    setEditandoId(null)
+  }
+
+  async function guardarEdicion(id: number) {
+    await api.patch(`/productos/${id}/`, {
+      nombre: editNombre,
+      descripcion: editDescripcion,
+      precio: editPrecio,
+      categoria: Number(editCategoriaId),
+    })
+    setEditandoId(null)
     cargarDatos()
   }
 
@@ -184,53 +215,113 @@ export function AdminMenu() {
         <div className="bg-white rounded-lg shadow p-4 lg:col-span-2">
           <h2 className="font-bold text-lg mb-4">📋 Productos existentes</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
             {productos.map((producto) => (
-              <div key={producto.id} className="border rounded-lg p-3 text-sm">
+              <div key={producto.id} className="border rounded-lg p-3 text-sm flex flex-col">
+                {/* Imagen: siempre cuadrada, así todas las tarjetas quedan
+                    con el mismo tamaño de imagen sin importar la foto. */}
                 {producto.imagen ? (
                   <img
                     src={producto.imagen}
                     alt={producto.nombre}
-                    className="w-full h-24 object-cover rounded mb-2"
+                    className="w-full aspect-square object-cover rounded mb-2"
                   />
                 ) : (
-                  <div className="w-full h-24 bg-slate-100 rounded mb-2 flex items-center justify-center text-3xl">
+                  <div className="w-full aspect-square bg-slate-100 rounded mb-2 flex items-center justify-center text-3xl">
                     🍽️
                   </div>
                 )}
-                <p className="font-semibold">{producto.nombre}</p>
-                <p className="text-slate-500">{producto.categoria_nombre}</p>
-                <p className="font-bold text-orange-600">
-                  ${Number(producto.precio).toLocaleString('es-CO')}
-                </p>
 
-                {/* Cambiar/agregar imagen a un producto ya creado */}
-                <label className="block mt-2 text-blue-600 hover:underline text-xs cursor-pointer">
-                  📷 {producto.imagen ? 'Cambiar imagen' : 'Agregar imagen'}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) =>
-                      e.target.files?.[0] && cambiarImagen(producto.id, e.target.files[0])
-                    }
-                  />
-                </label>
+                {editandoId === producto.id ? (
+                  // --- Modo edición: formulario inline ---
+                  <div className="flex flex-col gap-2">
+                    <input
+                      value={editNombre}
+                      onChange={(e) => setEditNombre(e.target.value)}
+                      className="border rounded px-2 py-1"
+                      placeholder="Nombre"
+                    />
+                    <textarea
+                      value={editDescripcion}
+                      onChange={(e) => setEditDescripcion(e.target.value)}
+                      className="border rounded px-2 py-1"
+                      placeholder="Descripción"
+                    />
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editPrecio}
+                      onChange={(e) => setEditPrecio(e.target.value)}
+                      className="border rounded px-2 py-1"
+                      placeholder="Precio"
+                    />
+                    <select
+                      value={editCategoriaId}
+                      onChange={(e) => setEditCategoriaId(e.target.value)}
+                      className="border rounded px-2 py-1"
+                    >
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nombre}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex justify-between">
+                      <button
+                        onClick={() => guardarEdicion(producto.id)}
+                        className="text-green-600 hover:underline"
+                      >
+                        Guardar
+                      </button>
+                      <button onClick={cancelarEdicion} className="text-slate-500 hover:underline">
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // --- Modo vista normal ---
+                  <>
+                    <p className="font-semibold line-clamp-1">{producto.nombre}</p>
+                    <p className="text-slate-500">{producto.categoria_nombre}</p>
+                    <p className="font-bold text-orange-600">
+                      ${Number(producto.precio).toLocaleString('es-CO')}
+                    </p>
 
-                <div className="flex justify-between mt-2">
-                  <button
-                    onClick={() => alternarDisponible(producto)}
-                    className={producto.disponible ? 'text-green-600' : 'text-slate-400'}
-                  >
-                    {producto.disponible ? '✅ Disponible' : '🚫 Oculto'}
-                  </button>
-                  <button
-                    onClick={() => borrarProducto(producto.id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    borrar
-                  </button>
-                </div>
+                    {/* Cambiar/agregar imagen a un producto ya creado */}
+                    <label className="block mt-2 text-blue-600 hover:underline text-xs cursor-pointer">
+                      📷 {producto.imagen ? 'Cambiar imagen' : 'Agregar imagen'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) =>
+                          e.target.files?.[0] && cambiarImagen(producto.id, e.target.files[0])
+                        }
+                      />
+                    </label>
+
+                    <div className="flex justify-between items-center mt-2">
+                      <button
+                        onClick={() => iniciarEdicion(producto)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        onClick={() => alternarDisponible(producto)}
+                        className={producto.disponible ? 'text-green-600' : 'text-slate-400'}
+                      >
+                        {producto.disponible ? '✅' : '🚫'}
+                      </button>
+                      <button
+                        onClick={() => borrarProducto(producto.id)}
+                        className="text-red-500 hover:underline"
+                      >
+                        borrar
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>
