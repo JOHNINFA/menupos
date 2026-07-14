@@ -17,6 +17,7 @@ Lecciones cortas por concepto. Léelas **antes** de usar el concepto en código.
 | 10 | [Consumir la API con fetch](10-consumir-api.md) | ✅ Lista | Clase 09, 07 |
 | 11 | [Estados de un pedido y reglas de negocio](11-estados-y-reglas-negocio.md) | ✅ Lista | Clase 05, 06 |
 | 12 | [Imágenes en AWS S3](12-aws-s3.md) | ✅ Lista | Clase 02 |
-| 13 | Deploy: Railway y Vercel | 🔜 Próximamente | Casi todo |
+| 13 | [Imágenes en Cloudinary](13-cloudinary.md) | ✅ Lista | Clase 12 |
+| 14 | Deploy: Render y Vercel | 🔜 Próximamente | Casi todo |
 
 > 💡 Esta lista crece a medida que avanzamos en el proyecto.

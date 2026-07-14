@@ -69,6 +69,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',        # Autenticación con tokens JWT
     'corsheaders',                     # Permite que React (otro dominio) llame la API
     'storages',                        # django-storages: para guardar imágenes en S3
+    'cloudinary_storage',              # Almacenamiento de imágenes en Cloudinary
+    'cloudinary',                      # SDK de Cloudinary
 
     # --- Nuestras apps (el "menú" de secciones de MenuPOS) ---
     'users',   # Usuarios: administrador y mesero
@@ -201,6 +203,27 @@ if USE_S3:
     # suben los usuarios, como las fotos de productos) vivan en S3.
     STORAGES = {
         'default': {'BACKEND': 'storages.backends.s3.S3Storage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
+
+# ---- Almacenamiento de imágenes: Cloudinary ----
+# Otro interruptor, igual que USE_S3 pero para Cloudinary (más simple, sin
+# tarjeta de crédito). Si hay credenciales de Cloudinary, las imágenes de
+# productos se guardan y sirven desde su CDN (permanente, no se borra al
+# redesplegar). Si no, se usa el disco local (desarrollo).
+# Ver mini-clase: docs/clases/13-cloudinary.md
+CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default='')
+
+if CLOUDINARY_CLOUD_NAME:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+        'API_KEY': config('CLOUDINARY_API_KEY'),
+        'API_SECRET': config('CLOUDINARY_API_SECRET'),
+    }
+    # Los archivos que suben los usuarios (media) van a Cloudinary.
+    # Los estáticos (CSS/JS del admin) siguen con WhiteNoise.
+    STORAGES = {
+        'default': {'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage'},
         'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
     }
 
