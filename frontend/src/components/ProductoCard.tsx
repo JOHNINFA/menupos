@@ -17,13 +17,15 @@ export function ProductoCard({ producto, onAgregar }: ProductoCardProps) {
       {/* Imagen del producto (viene de Cloudinary). Si el producto no
           tiene imagen, mostramos un placeholder con un ícono. */}
       {producto.imagen ? (
-        <img
-          src={producto.imagen}
-          alt={producto.nombre}
-          className="w-full h-32 object-cover"
-        />
+        <div className="w-full h-40 bg-slate-50 flex items-center justify-center">
+          <img
+            src={producto.imagen}
+            alt={producto.nombre}
+            className="w-full h-full object-contain"
+          />
+        </div>
       ) : (
-        <div className="w-full h-32 bg-slate-100 flex items-center justify-center text-4xl">
+        <div className="w-full h-40 bg-slate-100 flex items-center justify-center text-4xl">
           🍽️
         </div>
       )}
