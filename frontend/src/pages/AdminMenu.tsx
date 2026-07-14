@@ -179,6 +179,13 @@ export function AdminMenu() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {productos.map((producto) => (
               <div key={producto.id} className="border rounded-lg p-3 text-sm">
+                {producto.imagen && (
+                  <img
+                    src={producto.imagen}
+                    alt={producto.nombre}
+                    className="w-full h-24 object-cover rounded mb-2"
+                  />
+                )}
                 <p className="font-semibold">{producto.nombre}</p>
                 <p className="text-slate-500">{producto.categoria_nombre}</p>
                 <p className="font-bold text-orange-600">
