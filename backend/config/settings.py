@@ -227,6 +227,25 @@ if CLOUDINARY_CLOUD_NAME:
         'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
     }
 
+# ---- Almacenamiento de imágenes: Azure Blob Storage ----
+# Interruptor para Azure (usa django-storages, ya instalado). Si hay
+# credenciales de una cuenta de almacenamiento de Azure, las imágenes de
+# productos se guardan y sirven desde un "container" de Azure Blob
+# (permanente, no se borra al redesplegar). Si no, disco local.
+# Ver mini-clase: docs/clases/13-cloudinary.md (mismo concepto)
+AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME', default='')
+
+if AZURE_ACCOUNT_NAME:
+    AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
+    AZURE_CONTAINER = config('AZURE_CONTAINER', default='menupos-media')
+    # Dominio público desde donde se sirven las imágenes.
+    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+
+    STORAGES = {
+        'default': {'BACKEND': 'storages.backends.azure_storage.AzureStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Le decimos a Django que use NUESTRO modelo Usuario (con el campo `rol`)
