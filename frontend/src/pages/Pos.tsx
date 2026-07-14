@@ -81,7 +81,7 @@ export function Pos() {
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {/* Menú de productos: solo los marcados como disponibles por el admin */}
-        <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4 items-start">
+        <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 items-start">
           {productos.filter((p) => p.disponible).map((producto) => (
             <ProductoCard
               key={producto.id}

@@ -83,6 +83,14 @@ export function AdminMenu() {
     cargarDatos()
   }
 
+  // Cambia SOLO la imagen de un producto existente (PATCH con FormData).
+  async function cambiarImagen(id: number, file: File) {
+    const formData = new FormData()
+    formData.append('imagen', file)
+    await api.patch(`/productos/${id}/`, formData)
+    cargarDatos()
+  }
+
   return (
     <div className="min-h-screen bg-slate-100">
       <Header />
@@ -179,18 +187,36 @@ export function AdminMenu() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {productos.map((producto) => (
               <div key={producto.id} className="border rounded-lg p-3 text-sm">
-                {producto.imagen && (
+                {producto.imagen ? (
                   <img
                     src={producto.imagen}
                     alt={producto.nombre}
                     className="w-full h-24 object-cover rounded mb-2"
                   />
+                ) : (
+                  <div className="w-full h-24 bg-slate-100 rounded mb-2 flex items-center justify-center text-3xl">
+                    🍽️
+                  </div>
                 )}
                 <p className="font-semibold">{producto.nombre}</p>
                 <p className="text-slate-500">{producto.categoria_nombre}</p>
                 <p className="font-bold text-orange-600">
                   ${Number(producto.precio).toLocaleString('es-CO')}
                 </p>
+
+                {/* Cambiar/agregar imagen a un producto ya creado */}
+                <label className="block mt-2 text-blue-600 hover:underline text-xs cursor-pointer">
+                  📷 {producto.imagen ? 'Cambiar imagen' : 'Agregar imagen'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) =>
+                      e.target.files?.[0] && cambiarImagen(producto.id, e.target.files[0])
+                    }
+                  />
+                </label>
+
                 <div className="flex justify-between mt-2">
                   <button
                     onClick={() => alternarDisponible(producto)}
