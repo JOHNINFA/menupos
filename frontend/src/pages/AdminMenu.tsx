@@ -215,19 +215,19 @@ export function AdminMenu() {
         <div className="bg-white rounded-lg shadow p-4 lg:col-span-2">
           <h2 className="font-bold text-lg mb-4">📋 Productos existentes</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 items-start">
             {productos.map((producto) => (
-              <div key={producto.id} className="border rounded-lg p-3 text-sm flex flex-col">
-                {/* Imagen: siempre cuadrada, así todas las tarjetas quedan
-                    con el mismo tamaño de imagen sin importar la foto. */}
+              <div key={producto.id} className="border rounded-xl p-2 text-sm flex flex-col">
+                {/* Imagen de altura fija: todas las tarjetas del mismo tamaño
+                    (compacto) sin importar la relación de la foto. */}
                 {producto.imagen ? (
                   <img
                     src={producto.imagen}
                     alt={producto.nombre}
-                    className="w-full aspect-square object-cover rounded mb-2"
+                    className="w-full h-24 object-cover rounded-lg mb-2"
                   />
                 ) : (
-                  <div className="w-full aspect-square bg-slate-100 rounded mb-2 flex items-center justify-center text-3xl">
+                  <div className="w-full h-24 bg-slate-100 rounded-lg mb-2 flex items-center justify-center text-3xl">
                     🍽️
                   </div>
                 )}

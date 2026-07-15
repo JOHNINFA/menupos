@@ -1,29 +1,38 @@
-// Pantalla principal del POS: lista de productos + carrito + cobro.
+// Pantalla principal del POS: filtro por categoría + productos + orden.
 // Ver mini-clases: 08 (componentes), 09 (useState/useEffect), 10 (fetch/API)
 
 import { useState, useEffect } from 'react'
 import api from '../api/client'
 import { Header } from '../components/Header'
 import { ProductoCard } from '../components/ProductoCard'
-import type { Producto, ItemCarrito } from '../types'
+import type { Producto, Categoria, ItemCarrito } from '../types'
 
 export function Pos() {
   const [productos, setProductos] = useState<Producto[]>([])
+  const [categorias, setCategorias] = useState<Categoria[]>([])
+  const [categoriaActiva, setCategoriaActiva] = useState<number | null>(null)
   const [carrito, setCarrito] = useState<ItemCarrito[]>([])
   const [tipo, setTipo] = useState<'mesa' | 'llevar'>('mesa')
   const [mesa, setMesa] = useState('')
   const [mensaje, setMensaje] = useState('')
 
-  // Se ejecuta UNA vez al entrar a la pantalla: pide el menú a la API.
+  // Al entrar: pedimos productos y categorías a la API.
   useEffect(() => {
     api.get<Producto[]>('/productos/').then((res) => setProductos(res.data))
+    api.get<Categoria[]>('/categorias/').then((res) => setCategorias(res.data))
   }, [])
+
+  // Productos visibles: solo disponibles y de la categoría seleccionada.
+  const productosVisibles = productos.filter(
+    (p) =>
+      p.disponible &&
+      (categoriaActiva === null || p.categoria === categoriaActiva)
+  )
 
   function agregarAlCarrito(producto: Producto) {
     setCarrito((actual) => {
       const existente = actual.find((item) => item.producto.id === producto.id)
       if (existente) {
-        // Ya está en el carrito: solo sube la cantidad (nunca mutar el array directo)
         return actual.map((item) =>
           item.producto.id === producto.id
             ? { ...item, cantidad: item.cantidad + 1 }
@@ -34,27 +43,28 @@ export function Pos() {
     })
   }
 
-  function quitarDelCarrito(productoId: number) {
-    setCarrito((actual) => actual.filter((item) => item.producto.id !== productoId))
+  // Sube o baja la cantidad de un item; si llega a 0, lo saca del pedido.
+  function cambiarCantidad(productoId: number, delta: number) {
+    setCarrito((actual) =>
+      actual.flatMap((item) => {
+        if (item.producto.id !== productoId) return [item]
+        const nueva = item.cantidad + delta
+        return nueva <= 0 ? [] : [{ ...item, cantidad: nueva }]
+      })
+    )
   }
 
   const total = carrito.reduce(
-    (acumulado, item) => acumulado + Number(item.producto.precio) * item.cantidad,
+    (acc, item) => acc + Number(item.producto.precio) * item.cantidad,
     0
   )
 
-  // Falta el número de mesa solo cuando el pedido es de tipo "mesa".
   const faltaMesa = tipo === 'mesa' && !mesa
 
   async function enviarPedido() {
     if (carrito.length === 0 || faltaMesa) return
     setMensaje('')
     try {
-      // El backend recalcula precio_unitario y total desde el servidor
-      // (ver sales/serializers.py) — el frontend solo manda tipo/mesa/detalles.
-      // La venta queda en estado 'pedido' hasta que se entregue y cobre. Si es una
-      // mesa que ya tiene cuenta abierta, el backend suma estos productos
-      // a esa cuenta en vez de crear otra (flujo real, FASE 6d).
       await api.post('/ventas/', {
         tipo,
         mesa: tipo === 'mesa' ? Number(mesa) : null,
@@ -67,7 +77,7 @@ export function Pos() {
       setMesa('')
       setMensaje(
         tipo === 'mesa'
-          ? `✅ Pedido enviado a la cuenta de la mesa ${mesa}`
+          ? `✅ Pedido enviado a la mesa ${mesa}`
           : '✅ Pedido para llevar enviado'
       )
     } catch {
@@ -79,33 +89,72 @@ export function Pos() {
     <div className="min-h-screen bg-slate-100">
       <Header />
 
-      <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        {/* Menú de productos: solo los marcados como disponibles por el admin */}
-        <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 items-start">
-          {productos.filter((p) => p.disponible).map((producto) => (
-            <ProductoCard
-              key={producto.id}
-              producto={producto}
-              onAgregar={agregarAlCarrito}
-            />
-          ))}
+      <div className="p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* ===== Columna izquierda: categorías + productos ===== */}
+        <div className="lg:col-span-2">
+          {/* Tabs de categorías (pills) */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              onClick={() => setCategoriaActiva(null)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                categoriaActiva === null
+                  ? 'bg-slate-800 text-white'
+                  : 'bg-white text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Todos
+            </button>
+            {categorias.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategoriaActiva(cat.id)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  categoriaActiva === cat.id
+                    ? 'bg-slate-800 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {cat.nombre}
+              </button>
+            ))}
+          </div>
+
+          {/* Grid de productos */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 items-start">
+            {productosVisibles.map((producto) => (
+              <ProductoCard
+                key={producto.id}
+                producto={producto}
+                onAgregar={agregarAlCarrito}
+              />
+            ))}
+          </div>
+
           {productos.length === 0 && (
-            <p className="text-slate-500 col-span-full">Cargando productos...</p>
+            <p className="text-slate-500">Cargando productos...</p>
+          )}
+          {productos.length > 0 && productosVisibles.length === 0 && (
+            <p className="text-slate-400 text-sm">No hay productos en esta categoría.</p>
           )}
         </div>
 
-        {/* Carrito */}
-        <div className="bg-white rounded-lg shadow p-4 h-fit">
-          <h2 className="font-bold text-lg mb-4">🧾 Pedido actual</h2>
+        {/* ===== Columna derecha: resumen del pedido ===== */}
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:sticky lg:top-6">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl">🧾</span>
+            <h2 className="font-bold text-lg text-slate-800">Pedido actual</h2>
+          </div>
+          <p className="text-xs text-slate-400 uppercase tracking-wide mb-4">
+            Resumen de orden
+          </p>
 
-          {/* Tipo de pedido: define si se pide número de mesa o no */}
-          <label className="block text-sm text-slate-600 mb-1">Tipo de pedido</label>
+          {/* Tipo de pedido */}
           <div className="flex gap-2 mb-3">
             <button
               type="button"
               onClick={() => setTipo('mesa')}
-              className={`flex-1 py-2 rounded text-sm ${
-                tipo === 'mesa' ? 'bg-orange-600 text-white' : 'bg-slate-200'
+              className={`flex-1 py-2 rounded-lg text-sm font-medium ${
+                tipo === 'mesa' ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-600'
               }`}
             >
               🍽️ Mesa
@@ -113,17 +162,16 @@ export function Pos() {
             <button
               type="button"
               onClick={() => setTipo('llevar')}
-              className={`flex-1 py-2 rounded text-sm ${
-                tipo === 'llevar' ? 'bg-orange-600 text-white' : 'bg-slate-200'
+              className={`flex-1 py-2 rounded-lg text-sm font-medium ${
+                tipo === 'llevar' ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-600'
               }`}
             >
               🥡 Para llevar
             </button>
           </div>
 
-          {/* El número de mesa solo aparece si el tipo es "mesa" */}
           {tipo === 'mesa' && (
-            <>
+            <div className="mb-4">
               <label className="block text-sm text-slate-600 mb-1">Número de mesa</label>
               <input
                 type="number"
@@ -131,48 +179,79 @@ export function Pos() {
                 value={mesa}
                 onChange={(e) => setMesa(e.target.value)}
                 placeholder="Ej: 5"
-                className="w-full border rounded px-3 py-2 mb-4"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2"
               />
-            </>
+            </div>
           )}
 
-          {carrito.length === 0 && (
-            <p className="text-slate-400 text-sm">Toca un producto para agregarlo</p>
+          {/* Items del pedido */}
+          {carrito.length === 0 ? (
+            <div className="text-center py-8 text-slate-400">
+              <div className="text-4xl mb-2">🛒</div>
+              <p className="text-sm">Toca un producto para agregarlo</p>
+              <p className="text-xs">Aún no hay platos en la orden</p>
+            </div>
+          ) : (
+            <ul className="flex flex-col gap-3 mb-4">
+              {carrito.map((item) => (
+                <li key={item.producto.id} className="flex items-center gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-800 truncate">
+                      {item.producto.nombre}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      ${Number(item.producto.precio).toLocaleString('es-CO')} c/u
+                    </p>
+                  </div>
+                  {/* Controles de cantidad */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => cambiarCantidad(item.producto.id, -1)}
+                      className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    >
+                      −
+                    </button>
+                    <span className="w-5 text-center text-sm font-semibold">
+                      {item.cantidad}
+                    </span>
+                    <button
+                      onClick={() => cambiarCantidad(item.producto.id, 1)}
+                      className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    >
+                      +
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
 
-          <ul className="flex flex-col gap-2">
-            {carrito.map((item) => (
-              <li
-                key={item.producto.id}
-                className="flex justify-between items-center text-sm"
-              >
-                <span>
-                  {item.cantidad}x {item.producto.nombre}
-                </span>
-                <button
-                  onClick={() => quitarDelCarrito(item.producto.id)}
-                  className="text-red-500 hover:underline"
-                >
-                  quitar
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-4 pt-4 border-t flex justify-between font-bold">
-            <span>Total</span>
-            <span>${total.toLocaleString('es-CO')}</span>
+          {/* Total */}
+          <div className="pt-4 border-t flex justify-between items-center mb-4">
+            <span className="font-semibold text-slate-800">Total</span>
+            <span className="font-bold text-xl text-orange-600">
+              ${total.toLocaleString('es-CO')}
+            </span>
           </div>
 
           <button
             onClick={enviarPedido}
             disabled={carrito.length === 0 || faltaMesa}
-            className="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
+            className="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 disabled:opacity-50 transition-colors"
           >
-            Enviar pedido
+            ▷ Enviar pedido
           </button>
 
-          {mensaje && <p className="mt-3 text-sm">{mensaje}</p>}
+          {carrito.length > 0 && (
+            <button
+              onClick={() => setCarrito([])}
+              className="w-full mt-2 text-slate-400 text-xs uppercase tracking-wide hover:text-slate-600"
+            >
+              Limpiar pedido
+            </button>
+          )}
+
+          {mensaje && <p className="mt-3 text-sm text-center">{mensaje}</p>}
         </div>
       </div>
     </div>
